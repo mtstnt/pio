@@ -36,10 +36,10 @@ func copyRecursive(fromPath, destPath string, excludeDirs, includeDirs, excludeF
 		completeFromPath := path.Join(fromPath, entry.Name())
 		completeDestPath := path.Join(destPath, entry.Name())
 
-		if isInList(completeFromPath, excludeDirs) ||
-			isInList(completeFromPath, excludeFiles) ||
-			entry.Name() == "." ||
-			entry.Name() == ".." {
+		// TODO: The excludeDir is still problematic for generate as it has the complete full path
+		if (entry.IsDir() && isInList(completeFromPath, excludeDirs)) ||
+			(!entry.IsDir() && isInList(entry.Name(), excludeFiles)) ||
+			entry.Name() == "." || entry.Name() == ".." {
 			continue
 		}
 
@@ -51,7 +51,9 @@ func copyRecursive(fromPath, destPath string, excludeDirs, includeDirs, excludeF
 			if err := copyRecursive(cFromPath, cDestPath, excludeDirs, includeDirs, excludeFiles, includeFiles); err != nil {
 				return err
 			}
+
 		} else {
+
 			fptrSource, err := os.Open(completeFromPath)
 			if err != nil {
 				return err

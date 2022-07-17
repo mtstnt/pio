@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -59,5 +60,11 @@ func readPioConfig(pioConfigPath string) (TemplateInfo, error) {
 		return TemplateInfo{}, err
 	}
 
-	return TemplateInfo{}, nil
+	return tmplInfo, nil
+}
+
+func GetPathBasename(path string) string {
+	p := strings.Split(path, string(os.PathSeparator))
+	q := p[len(p)-1]
+	return q
 }
