@@ -18,7 +18,11 @@ func Copy(fromPath, destPath string, excludeDirs, includeDirs, excludeFiles, inc
 		return err
 	}
 
-	return copyRecursive(fromPath, destPath, excludeDirs, includeDirs, excludeFiles, includeFiles)
+	if err := copyRecursive(fromPath, destPath, excludeDirs, includeDirs, excludeFiles, includeFiles); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func copyRecursive(fromPath, destPath string, excludeDirs, includeDirs, excludeFiles, includeFiles LookupMap) error {

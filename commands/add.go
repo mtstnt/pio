@@ -7,6 +7,7 @@ import (
 
 	"github.com/mtstnt/pio/utils"
 	"github.com/urfave/cli/v2"
+	"gopkg.in/yaml.v3"
 )
 
 var flags = []cli.Flag{
@@ -72,10 +73,13 @@ func addActionFunc(ctx *cli.Context) error {
 		}
 	}
 
-	createTemplate(
+	// Create and copy the template
+	if err := createTemplate(
 		templateName,
 		fromPath,
-	)
+	); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -83,13 +87,55 @@ func addActionFunc(ctx *cli.Context) error {
 func createTemplate(tmplName, fromPath string) error {
 
 	// Create directory
-	err := os.MkdirAll(path.Join(utils.APP_PATH, "templates", tmplName), os.ModeDir)
+	destPath := path.Join(utils.TEMPLATES_PATH, tmplName)
+	err := os.MkdirAll(destPath, os.ModeDir)
 
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("ADDING TEMPLATE " + tmplName + " TO PATH \"" + destPath + "\"")
+
 	// Copy from `fromPath`
+	if err = utils.Copy(
+		fromPath,
+		destPath,
+		utils.LookupMap{
+			".git":         true,
+			"node_modules": true,
+			"vendor":       true,
+		},
+		utils.Nothing,
+		utils.Nothing,
+		utils.Nothing,
+	); err != nil {
+		return err
+	}
+
+	// Setup pio file
+	if err := setupPioConfig(destPath, tmplName); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func setupPioConfig(destPath string, tmplName string) error {
+	pioFilePath := path.Join(destPath, "pio.yml")
+
+	tmplInfo := utils.TemplateInfo{
+		Name: tmplName,
+		Path: destPath,
+	}
+
+	yamlByte, err := yaml.Marshal(&tmplInfo)
+	if err != nil {
+		return err
+	}
+
+	if err = os.WriteFile(pioFilePath, yamlByte, 0777); err != nil {
+		return err
+	}
 
 	return nil
 }

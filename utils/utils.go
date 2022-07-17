@@ -10,16 +10,14 @@ import (
 
 // Format of the pio.yml
 type TemplateInfo struct {
-	Namespace string
-	Name      string
-	Path      string
+	Name string `yaml:"name"`
+	Path string `yaml:"path"`
 }
 
 func GetTemplatesList() ([]TemplateInfo, error) {
 
 	// Read the templates directory and format each of them into templates list
-	baseTmplPath := path.Join(APP_PATH, TEMPLATES_DIR_NAME)
-	entries, err := os.ReadDir(baseTmplPath)
+	entries, err := os.ReadDir(TEMPLATES_PATH)
 	if err != nil {
 		return nil, err
 	}
@@ -28,10 +26,10 @@ func GetTemplatesList() ([]TemplateInfo, error) {
 
 	for _, entry := range entries {
 		if entry.IsDir() {
-			tmplPath := path.Join(baseTmplPath, entry.Name())
+			tmplPath := path.Join(TEMPLATES_PATH, entry.Name())
 
 			// Read the templates' internals in slurp.yml
-			tmplInfo, err := readPioConfig(path.Join(tmplPath, "slurp.yml"))
+			tmplInfo, err := readPioConfig(path.Join(tmplPath, "pio.yml"))
 			if err != nil {
 				return nil, err
 			}
