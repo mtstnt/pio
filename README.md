@@ -41,3 +41,4 @@ Commands:
 To add later:
 - Add values in files that can be changed on template generation. (Ex: project name, class name, etc)
 - Allow custom parameters in generate.
+- Put templates folder in $HOME/.pio for better structure

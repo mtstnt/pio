@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"path"
 
 	cmd "github.com/mtstnt/pio/commands"
 	"github.com/mtstnt/pio/utils"
@@ -16,15 +17,18 @@ func registerCommands() []*cli.Command {
 }
 
 func main() {
+	utils.SetupConstants()
+
 	app := &cli.App{
 		Name:  "Pio",
 		Usage: "Enter -h or --help to show help",
 		Action: func(*cli.Context) error {
 			return utils.Copy(
 				".",
-				"./testingwoe",
+				path.Join(utils.APP_PATH, "templates", "testingwoe"),
 				utils.LookupMap{
-					".git": true,
+					".git":            true,
+					"build/templates": true,
 				},
 				utils.Nothing,
 				utils.Nothing,

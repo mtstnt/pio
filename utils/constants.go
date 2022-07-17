@@ -3,6 +3,7 @@ package utils
 import (
 	"log"
 	"os"
+	"strings"
 )
 
 const (
@@ -14,14 +15,18 @@ var (
 	EXEC_PATH string
 )
 
-func init() {
+func SetupConstants() {
 	// Setup the app executable path
 	appPath, err := os.Executable()
 	if err != nil {
 		log.Fatalln("Failed to get application path")
 	}
 
-	APP_PATH = appPath
+	// cd ..
+	a := strings.Split(appPath, string(os.PathSeparator))
+	b := strings.Join(a[:len(a)-1], string(os.PathSeparator))
+
+	APP_PATH = b
 
 	// Setup the path original exec path
 	execPath, err := os.Getwd()

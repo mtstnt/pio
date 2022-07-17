@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path"
 )
@@ -13,6 +14,10 @@ var Nothing = LookupMap{}
 
 // Copies all files from fromPath to destPath, with exceptions and inclusions in CopyInfo
 func Copy(fromPath, destPath string, excludeDirs, includeDirs, excludeFiles, includeFiles LookupMap) error {
+	if err := os.MkdirAll(destPath, os.ModeDir); err != nil {
+		return err
+	}
+
 	return copyRecursive(fromPath, destPath, excludeDirs, includeDirs, excludeFiles, includeFiles)
 }
 
@@ -23,10 +28,11 @@ func copyRecursive(fromPath, destPath string, excludeDirs, includeDirs, excludeF
 	}
 
 	for _, entry := range entries {
-		completePath := path.Join(fromPath, entry.Name())
+		completeFromPath := path.Join(fromPath, entry.Name())
+		completeDestPath := path.Join(destPath, entry.Name())
 
-		if isInList(completePath, excludeDirs) ||
-			isInList(completePath, excludeFiles) ||
+		if isInList(completeFromPath, excludeDirs) ||
+			isInList(completeFromPath, excludeFiles) ||
 			entry.Name() == "." ||
 			entry.Name() == ".." {
 			continue
@@ -34,15 +40,33 @@ func copyRecursive(fromPath, destPath string, excludeDirs, includeDirs, excludeF
 
 		if entry.IsDir() {
 			// Must not pass ptr because we append to its from and dest path
-			cFromPath := completePath
-			cDestPath := path.Join(destPath, entry.Name())
+			cFromPath := completeFromPath
+			cDestPath := completeDestPath
 
 			if err := copyRecursive(cFromPath, cDestPath, excludeDirs, includeDirs, excludeFiles, includeFiles); err != nil {
 				return err
 			}
 		} else {
-			// TODO: Actually copy the files lmao
-			fmt.Println("COPIED " + path.Join(fromPath, entry.Name()))
+			fptrSource, err := os.Open(completeFromPath)
+			if err != nil {
+				return err
+			}
+
+			err = os.MkdirAll(destPath, os.ModeDir)
+			if err != nil {
+				return err
+			}
+
+			fptrDest, err := os.Create(completeDestPath)
+			if err != nil {
+				return err
+			}
+
+			_, err = io.Copy(fptrDest, fptrSource)
+			if err != nil {
+				return err
+			}
+			fmt.Println("COPIED " + completeFromPath + " TO " + completeDestPath)
 		}
 	}
 
