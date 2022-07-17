@@ -1,4 +1,6 @@
-# CodeSlurp
+# Pio
+
+Personal I/O assistant (?)
 
 Save project and use it everytime you need it with a simple command.
 
