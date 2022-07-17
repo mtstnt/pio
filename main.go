@@ -13,6 +13,7 @@ import (
 func registerCommands() []*cli.Command {
 	return []*cli.Command{
 		cmd.Add(),
+		cmd.Generate(),
 	}
 }
 
@@ -28,11 +29,22 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:  "Pio",
+		Name:  "pio",
 		Usage: "Enter -h or --help to show help",
-		Action: func(*cli.Context) error {
-			fmt.Println("Mantap")
+		Action: func(ctx *cli.Context) error {
+			if ctx.Bool("version") {
+				fmt.Println("Pio version 0.0.1a")
+				fmt.Println("A simplistic project and template generator by mtstnt (https://github.com/mtstnt)")
+				return nil
+			}
+
 			return nil
+		},
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:  "version",
+				Value: true,
+			},
 		},
 		Commands: registerCommands(),
 	}

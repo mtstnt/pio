@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var flags = []cli.Flag{
+var addFlags = []cli.Flag{
 	&cli.StringSliceFlag{
 		Name:    "exclude-dirs",
 		Aliases: []string{"e"},
@@ -39,7 +39,7 @@ func Add() *cli.Command {
 		Usage:     "Add a project to your project templates list",
 		ArgsUsage: "The name of the template",
 		Action:    addActionFunc,
-		Flags:     flags,
+		Flags:     addFlags,
 	}
 }
 
