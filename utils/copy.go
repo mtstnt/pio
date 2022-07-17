@@ -25,6 +25,7 @@ func Copy(fromPath, destPath string, excludeDirs, includeDirs, excludeFiles, inc
 	return nil
 }
 
+// TODO: Include, Exclude Files not yet implemented.
 func copyRecursive(fromPath, destPath string, excludeDirs, includeDirs, excludeFiles, includeFiles LookupMap) error {
 	entries, err := os.ReadDir(fromPath)
 	if err != nil {
