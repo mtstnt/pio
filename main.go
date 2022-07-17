@@ -25,7 +25,7 @@ func main() {
 		Action: func(*cli.Context) error {
 			return utils.Copy(
 				".",
-				path.Join(utils.APP_PATH, "templates", "testingwoe"),
+				path.Join(utils.TEMPLATES_PATH, "testingwoe"),
 				utils.LookupMap{
 					".git":            true,
 					"build/templates": true,

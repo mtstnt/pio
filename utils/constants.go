@@ -3,16 +3,19 @@ package utils
 import (
 	"log"
 	"os"
+	"path"
+	"runtime"
 	"strings"
 )
 
 const (
-	TEMPLATES_PATH = "./templates"
+	TEMPLATES_DIR_NAME = "templates"
 )
 
 var (
-	APP_PATH  string
-	EXEC_PATH string
+	APP_PATH       string
+	EXEC_PATH      string
+	TEMPLATES_PATH string
 )
 
 func SetupConstants() {
@@ -35,4 +38,15 @@ func SetupConstants() {
 	}
 
 	EXEC_PATH = execPath
+
+	if runtime.GOOS == "windows" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			log.Fatalln("Failed to get home directory (Windows)")
+		}
+
+		TEMPLATES_PATH = path.Join(homeDir, ".pio", "templates")
+	} else {
+		TEMPLATES_PATH = path.Join("/", "etc", "pio", "templates")
+	}
 }

@@ -8,10 +8,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const (
-	TEMPLATES_DIR_NAME = "templates"
-)
-
 // Format of the pio.yml
 type TemplateInfo struct {
 	Namespace string

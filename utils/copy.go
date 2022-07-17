@@ -66,6 +66,7 @@ func copyRecursive(fromPath, destPath string, excludeDirs, includeDirs, excludeF
 			if err != nil {
 				return err
 			}
+
 			fmt.Println("COPIED " + completeFromPath + " TO " + completeDestPath)
 		}
 	}
